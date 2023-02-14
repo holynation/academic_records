@@ -1,10 +1,10 @@
 <?php
-		require_once('application/models/Crud.php');
-		/**
-		* This class  is automatically generated based on the structure of the table. And it represent the model of the course_score table.
-		*/
-		class Course_score extends Crud
-		{
+namespace App\Entities;
+
+use App\Models\Crud;
+
+class Course_score extends Crud
+{
 protected static $tablename='Course_score';
 /* this array contains the field that can be null*/
 static $nullArray=array();

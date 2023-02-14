@@ -6,7 +6,7 @@ class Lecturer extends Crud
 {
 protected static $tablename='Lecturer';
 /* this array contains the field that can be null*/
-static $nullArray=array('designation','dob' ,'status' ,'address' ,'state_of_origin' ,'lga_of_origin'  ,'disability' ,'date_of_first_appointment' ,'nationality','role_id' );
+static $nullArray=array('designation','dob' ,'status' ,'address' ,'state_of_origin' ,'lga_of_origin'  ,'disability' ,'date_of_first_appointment' ,'nationality','role_id','lecturer_path');
 static $compositePrimaryKey=array();
 static $uploadDependency = array();
 /*this array contains the fields that are unique*/
@@ -205,8 +205,8 @@ public function getLecturer_pathFormField($value = ''){
        return "<div class='row'>
                 <div class='col-lg-8'>
                     <div class='form-group'>
-                    <label>Lecturer Image</label>
-                <input type='file' class='file-input' data-show-caption='false' data-show-upload='false' data-fouc name='lecturer_path' id='lecturer_path' />
+                    <label>Staff Image</label>
+                <input type='file' class='form-control' name='lecturer_path' id='lecturer_path' />
                 <span class='form-text text-muted'>Max File size is 800KB. Supported formats: <code> jpeg,jpg,png</code></span></div></div>
                 <div class='col-sm-4'><img src='$path' alt='staff image' class='img-responsive' width='30%'/></div>
             </div><br>";

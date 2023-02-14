@@ -6,7 +6,7 @@ class Student_biodata extends Crud
 	{
 protected static $tablename='Student_biodata';
 /* this array contains the field that can be null*/
-static $nullArray=array('middlename' ,'dob' ,'email' ,'phone_number' ,'gender' ,'address' ,'state_of_origin' ,'lga_of_origin' ,'registration_number' ,'entry_mode_id' ,'study_mode_id' ,'img_path' ,'nationality' );
+static $nullArray=array('middlename' ,'dob' ,'email' ,'phone_number' ,'gender' ,'address' ,'state_of_origin' ,'lga_of_origin' ,'registration_number' ,'entry_mode_id' ,'study_mode_id' ,'student_biodata_path' ,'nationality','status');
 static $compositePrimaryKey=array();
 static $uploadDependency = array();
 /*this array contains the fields that are unique*/
@@ -33,7 +33,7 @@ function __construct($array=array())
 }
 function getSurnameFormField($value=''){
 	return "<div class='form-group'>
-	<label for='surname' >Surname<session_semester_id/label>
+	<label for='surname' >Surname</label>
 		<input type='text' name='surname' id='surname' value='$value' class='form-control' required />
 </div> ";
 
@@ -199,7 +199,7 @@ function getMarital_statusFormField($value=''){
 
 function getStudent_biodata_pathFormField($value=''){
 	return "<div class='form-group'>
-	<label for='student_biodata_path' >Img Path</label>
+	<label for='student_biodata_path' >Student Image</label>
 		<input type='file' name='student_biodata_path' id='student_biodata_path' value='$value' class='form-control'  />
 </div> ";
 

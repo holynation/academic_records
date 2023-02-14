@@ -20,7 +20,7 @@
       <div class="card">
         <div class="card-body">
           <span class="fw-semibold d-block mb-0">Total Staffs</span>
-          <h3 class="card-title mb-2"><?php echo number_format(@$countData['staff']); ?></h3>
+          <h3 class="card-title mb-2"><?php echo number_format(@$countData['lecturer']); ?></h3>
           <a href="<?php echo base_url("vc/create/staff"); ?>">
             <small class="text-success fw-semibold">View Staffs
               <i class="bx bx-up-arrow-alt"></i>

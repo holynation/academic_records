@@ -241,7 +241,7 @@ class Role extends Crud
 				'class'=>'bx-book',
 				'children'=>array(
 					'Course'=>'vc/create/course',
-					'Course Assign'=>'vc/admin/view_model/session_semester_course',
+					'Course Assign'=>'vc/create/session_semester_course',
 				)
 			),
 			'Student Management'=>array(
@@ -253,7 +253,7 @@ class Role extends Crud
 				)
 			),
 			'Users Management'=>array(
-				'class'=>'bx-user-detail',
+				'class'=>'bxs-user-detail',
 				'children'=>array(
 					'Admin'=>'vc/create/admin',
 					'Staff'=>'vc/create/lecturer',
@@ -278,6 +278,7 @@ class Role extends Crud
 			'Extra Section' => array(
 				'class' => 'bx-layout',
 				'children' => array(
+					'Student Profile' => 'vc/admin/profile'
 				)
 			)
 		);

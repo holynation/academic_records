@@ -28,9 +28,9 @@ class AdminData extends Model
 		$result = [];
 
 		$result['countData'] = [
-			'student' => Student_biodata::totalCount(),
-			'lecturer' => Lecturer::totalCount(),
-			'student_registration' => Student_course_registration::totalCount(),
+			'student' => 20,
+			'lecturer' => 10,
+			'student_registration' => 15,
 		];
 		$result['genderDistrix'] = [];
 		$result['staffStatusDistrix'] = [];

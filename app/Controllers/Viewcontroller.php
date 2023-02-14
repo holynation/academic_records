@@ -1,14 +1,15 @@
 <?php
 namespace App\Controllers;
 
-use App\Entities\Customer;
+use App\Entities\Student_biodata;
 use App\Models\WebSessionManager;
 use App\Models\ModelFormBuilder;
 use App\Models\TableWithHeaderModel;
 use App\Models\QueryHtmlTableModel;
 use App\Models\QueryHtmlTableObjModel;
 use App\Models\Custom\AdminData;
-use App\Models\Custom\StaffData;
+use App\Models\Custom\LecturerData;
+use App\Models\Custom\StudentData;
 use CodeIgniter\I18n\Time;
 
 class Viewcontroller extends BaseController{
@@ -23,7 +24,7 @@ class Viewcontroller extends BaseController{
   protected $db;
   private $adminData;
   private $staffData;
-  private $companyData;
+  private $StudentData;
 
   private $crudNameSpace = 'App\Models\Crud';
 
@@ -117,10 +118,10 @@ private function admin($page,&$data)
   }
 
   if($page == 'view_model' || $page == 'view_more'
-    || $page == 'children' || $page == 'occupant' || $page == 'print_application'
   ){
     $path = 'vc/admin/view_model/staff';
   }
+  
   if (!$role->canView($path)) {
     echo show_access_denied();exit;
   }
@@ -249,28 +250,28 @@ private function getTitlePage(string $modelName){
   return array_key_exists($modelName, $result) ? $result[$modelName] : null;
 }
 
-private function staff($page,&$data){
-  $this->staffData = new StaffData;
-  $staff = loadClass('staff');
-  if($this->webSessionManager->getCurrentUserProp('user_type') == 'staff'){
-    $staff->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
-    $staff->load();
-    $this->staffData->setStaff($staff);
+private function lecturer($page,&$data){
+  $this->lecturerData = new LecturerData;
+  $lecturer = loadClass('lecturer');
+  if($this->webSessionManager->getCurrentUserProp('user_type') == 'lecturer'){
+    $lecturer->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
+    $lecturer->load();
+    $this->lecturerData->setlecturer($lecturer);
     if($this->webSessionManager->getCurrentUserProp('has_change_password') == 0){
       $data['hasChangePassword'] = $this->webSessionManager->getCurrentUserProp('has_change_password');
     }
-    $data['staff'] = $staff;
+    $data['lecturer'] = $lecturer;
   }
   else{
     $this->admin('children',$data);
   }
 }
 
-private function staffDashboard(&$data){
+private function lecturerDashboard(&$data){
   $data = array_merge($data,$this->staffData->loadDashboardInfo());
 }
 
-public function staffProfile(&$data)
+public function lecturerProfile(&$data)
 {
   if ($this->webSessionManager->getCurrentUserProp('user_type')=='admin') {
     $this->admin('profile',$data);
@@ -286,39 +287,66 @@ public function staffProfile(&$data)
   $data['db'] = $this->db;
 }
 
-public function staffChildren(&$data){
+public function lecturerChildren(&$data){
   $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
   $data['modelFormBuilder'] = $this->modelFormBuilder;
 }
 
-private function staffApply(&$data){
-  $allocation = loadClass('applicant_allocation');
-  $id = $data['staff']->ID;
-  $payload = $allocation->allNonObject($count,true,0,null,''," where staff_id='{$id}'");
-
-  $data['modelStatus'] = $payload ? true : false;
-  $data['modelPayload'] = $payload;
-  $data['modelFormBuilder'] = $this->modelFormBuilder;
-  $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
-  $data['webSessionManager'] = $this->webSessionManager;
+private function student($page,&$data)
+{
+  $this->studentData = new StudentData;
+  $student_biodata = loadClass('student_biodata');
+  $student_biodata->ID = $this->webSessionManager->getCurrentUserProp('user_type')=='admin'?$data['id']:$this->webSessionManager->getCurrentUserProp('user_table_id');
+  $student_biodata->load();
+  $this->studentData->setStudent($student_biodata);
+  $data['student']=$student_biodata;
 }
 
-private function staffPrint_application(&$data){
+private function studentDashboard(&$data)
+{
+  $data = array_merge($data,$this->studentData->loadDashboardInfo());
+}
+
+public function studentProfile(&$data)
+{
   if ($this->webSessionManager->getCurrentUserProp('user_type')=='admin') {
-    $this->admin('print_application',$data);
+    $this->admin('profile',$data);
+    if (!isset($data['id']) || !$data['id']) {
+      show_404();exit;
+    }
+    $std = new Student_biodata(array('ID'=>$data['id']));
+    if (!$std->load()) {
+      show_404();exit;
+    }
+    $data['student']=$std;
+    $data['extra']=true;
   }
-  $id = $data['id'];
-  $allocation = loadClass('applicant_allocation');
-  $allocation->ID = $id;
-  if(!$allocation->load()){
-    return redirect()->back()->with('error', "Allocation data can't be found");
-  }
-  $data['allocation'] = $allocation;
+  $data['extra']=false;
 }
 
-public function staffTenant(&$data){
-  $data['tableWithHeaderModel'] = $this->tableWithHeaderModel;
-  $data['modelFormBuilder'] = $this->modelFormBuilder;
+private function studentNew_register(&$data)
+{
+  $currentSession =$this->webSessionManager->getCurrentSession();
+
+  if (($reg=$this->student_biodata->hasCompletedRegistration($currentSession))) {
+    header("Location:".base_url('vc/student/registration_print/'.$reg[0]['academic_session_id']));exit;
+  }
+  $data['canRegister']=true;
+  //check that the student can register for this session
+  if (!$this->student_biodata->canRegister($currentSession)) {
+    $data['canRegister']=false;
+    return;
+  }
+  //first check if the student has a registered courses in this session 
+  $data = array_merge($data,$this->studentData->loadStudentRegistration($currentSession));
+  loadClass($this->load,'academic_session');
+  $this->academic_session->ID=$currentSession;
+  $this->academic_session->load();
+  $data['session_name']=$this->academic_session->session_name;
+}
+
+private function studentCourse_history(&$data){
+  $data = array_merge($data, $this->studentData->loadStudentCourseHistory());
 }
 
 //function for loading edit page for general application
@@ -366,10 +394,10 @@ public function edit($model,$id){
 }
 
 private function show_404(){
-  throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
+  throw new \CodeIgniter\Exceptions\PageNotFoundException();
 }
 
-# this method is for creation of form either in single or combine based on the page desire
+// this method is for creation of form either in single or combine based on the page desire
 public function create($model,$type='add',$data=null){
   if(!empty($type)){
     if($type=='add'){
