@@ -316,8 +316,9 @@ function buildOption($array, $val='',$defaultValue='')
 	if (empty($array)) {
 		return '';
 	}
-	$optionValue = ($defaultValue != '') ? "$defaultValue" : "---choose option---";
-	$result = "<option value=''>$optionValue</option>";
+	$optionValue = ($defaultValue != '') ? "$defaultValue" : "---choose option--";
+	// $result = "<option value=''>$optionValue</option>";
+	$result = '';
 	for ($i = 0; $i < count($array); $i++) {
 		$current = $array[$i];
 		$id = $current['id'];

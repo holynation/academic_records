@@ -249,7 +249,7 @@ class Role extends Crud
 				'children'=>array(
 					'Student'=>'vc/create/student_biodata',
 					'Student Registration' => 'vc/create/student_course_registration',
-					'Student Score' => 'vc/create/course_score',
+					'Student Result' => 'vc/admin/student_result',
 				)
 			),
 			'Users Management'=>array(

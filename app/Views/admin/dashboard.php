@@ -19,7 +19,7 @@
     <div class="col-lg-4 col-md-6 col-6 mb-0">
       <div class="card">
         <div class="card-body">
-          <span class="fw-semibold d-block mb-0">Total Staffs</span>
+          <span class="fw-semibold d-block mb-0">Total Lecturers</span>
           <h3 class="card-title mb-2"><?php echo number_format(@$countData['lecturer']); ?></h3>
           <a href="<?php echo base_url("vc/create/staff"); ?>">
             <small class="text-success fw-semibold">View Staffs
@@ -48,7 +48,7 @@
       <div class="card">
         <div class="row row-bordered g-0">
           <div class="col-md-12">
-            <h5 class="card-header m-0 me-2 pb-3">Applicant Gender Chart</h5>
+            <h5 class="card-header m-0 me-2 pb-3">Student Gender Distribution</h5>
             <div class="chart has-fixed-height" id="gender-pie"></div>
           </div>
         </div>
@@ -61,7 +61,7 @@
           <div class="row row-bordered g-0">
             <div class="col-md-12">
               <h5 class="card-header m-0 me-2 pb-3">Student Registration Course Distribution</h5>
-              <div id="totalApplicantChart" class="px-2"></div>
+              <div id="totalSessionChart" class="px-2"></div>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@
 <script>
   // addMoreEvent is loaded directly under custom.js
    function addMoreEvent() {
-      loadStaffStatusChart();
+      loadApplicantChart();
       loadGenderChart();
    }
 
@@ -102,20 +102,30 @@
     }
    }
 
-   function loadStaffStatusChart() {
-    var val = JSON.parse('<?php echo json_encode(@$staffStatusDistrix) ?>');
+   function loadApplicantChart() {
+    var val = JSON.parse('<?php echo json_encode(@$studentSessionDistrix) ?>');
     if (val !== undefined){
-      Morris.Donut({
-        element: 'staff-pie',
-        data:val,
-        labels: ['Y', 'Z', 'A','B'],
-        colors: [
+      Morris.Bar({
+        element: 'totalSessionChart',
+        data:val ,
+        xkey: 'session_name',
+        ykeys: ['total'],
+        barColors: [
+          '#5AB1EF',
+          '#EB0F82',
           '#2EC7C9',
            '#B6A2DE',
+           '#202A5A',
+           '#5AB1EF',
            '#ffa9ce',
-           '#B2EBF2',
-        ]
+           '#f4aaa4',
+           '#a5eed0',
+           '#b695ff',
+           '#5ce0aa'
+        ],
+        labels: ['Total', 'Z', 'A']
       });
     }
    }
+
 </script>

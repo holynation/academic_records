@@ -13,7 +13,7 @@ static $uploadDependency = array();
 /*this array contains the fields that are unique*/
 static $uniqueArray=array();
 /*this is an associative array containing the fieldname and the type of the field*/
-static $typeArray = array('student_biodata_id'=>'int','session_semester_course_id'=>'int','academic_session_id'=>'int','semester_id'=>'int','date_registered'=>'timestamp');
+static $typeArray = array('student_biodata_id'=>'int','academic_session_id'=>'int','semester_id'=>'int','session_semester_course_id'=>'int','date_registered'=>'timestamp');
 /*this is a dictionary that map a field name with the label name that will be shown in a form*/
 static $labelArray=array('ID'=>'','student_biodata_id'=>'','session_semester_course_id'=>'','academic_session_id'=>'','semester_id'=>'','date_registered'=>'');
 /*associative array of fields that have default value*/
@@ -33,28 +33,20 @@ function __construct($array=array())
 }
 
 function getStudent_biodata_idFormField($value=''){
-	$fk=null;//change the value of this variable to array('table'=>'student_biodata','display'=>'student_biodata_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
-
-	if (is_null($fk)) {
-		return $result="<input type='hidden' value='$value' name='student_biodata_id' id='student_biodata_id' class='form-control' />
-			";
-	}
-	if (is_array($fk)) {
-		$result ="<div class='form-group'>
-		<label for='student_biodata_id'>Student Biodata</label>";
-		$option = $this->loadOption($fk,$value);
-		//load the value from the given table given the name of the table to load and the display field
+	$query = "select student_biodata.id, concat(surname,' ', firstname,' (',matric_number,')') as value from student_biodata";
+	$option = buildOptionFromQuery($this->db,$query,null,$value);
+		$result ="
+		<div class='form-group'>
+		<label for='student_biodata_id'>Student</label>";
 		$result.="<select name='student_biodata_id' id='student_biodata_id' class='form-control'>
-			$option
-		</select>";
-	}
-	$result.="</div>";
+		$option
+		</select></div>";
 	return  $result;
 
 }
 
 function getSemester_idFormField($value=''){
-	$fk=null;//change the value of this variable to array('table'=>'student_biodata','display'=>'student_biodata_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
+	$fk=array('table'=>'semester','display'=>'semester_name');;//change the value of this variable to array('table'=>'student_biodata','display'=>'student_biodata_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
 
 	if (is_null($fk)) {
 		return $result="<input type='hidden' value='$value' name='semester_id' id='semester_id' class='form-control' />
@@ -73,7 +65,7 @@ function getSemester_idFormField($value=''){
 	return  $result;
 }
 function getAcademic_session_idFormField($value=''){
-	$fk=null;//change the value of this variable to array('table'=>'student_biodata','display'=>'student_biodata_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
+	$fk=array('table'=>'academic_session','display'=>'session_name');//change the value of this variable to array('table'=>'student_biodata','display'=>'student_biodata_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
 
 	if (is_null($fk)) {
 		return $result="<input type='hidden' value='$value' name='academic_session_id' id='academic_session_id' class='form-control' />
@@ -93,7 +85,7 @@ function getAcademic_session_idFormField($value=''){
 }
 
 function getSession_semester_course_idFormField($value=''){
-	$query = "select session_semester_course.id, concat_ws(' ',course_code,course_unit) as value from session_semester_course join course on session_semester_course.course_id = course.id";
+	$query = "select session_semester_course.id, concat_ws(' ',course_code,'(',course_unit,')') as value from session_semester_course join course on session_semester_course.course_id = course.id";
 	$option = buildOptionFromQuery($this->db,$query,null,$value);
 		$result ="
 		<div class='form-group'>

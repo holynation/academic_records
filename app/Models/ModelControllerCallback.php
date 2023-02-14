@@ -66,9 +66,9 @@
 			//the user type should be admin
 			$user = loadClass('user');
 			if ($type=='insert') {
-				// login details as follow: username = email, password = firstname(in lowercase)
-				$password = encode_password(strtolower($data['firstname']));
-				$param = array('user_type'=>'student_biodata','username'=>$data['email'],'password'=>$password,'user_table_id'=>$data['LAST_INSERT_ID']);
+				// login details as follow: username = matric, password = firstname(in lowercase)
+				$password = encode_password(strtolower($data['surname']));
+				$param = array('user_type'=>'student_biodata','username'=>$data['matric_number'],'password'=>$password,'user_table_id'=>$data['LAST_INSERT_ID']);
 				$std = new $user($param);
 				if ($std->insert($db,$message)) {
 					return true;

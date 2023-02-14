@@ -208,39 +208,22 @@ private function adminView_more(&$data){
   $data['modelInfo'] = false;
 }
 
-private function adminApplicant_allocation(&$data){
-  $allocation = loadClass('applicant_allocation');
-  $pager = service('pager');
-  $page    = (int) ($this->request->getGet('page') ?? 1);
-  $perPage = 20;
-  $total   = $allocation::totalCount();
-
-  $start =  ($page > 1) ? ($page * $perPage) : $page;
-  $where = "where applicant_status = 'pending'";
-  if($this->request->getGet('category')){
-    $where .= " and category_id = '{$this->request->getGet('category')}'";
+private function adminStudent_result(&$data)
+{
+  if (isset($_GET['matric']) && $_GET['matric'] && isset($_GET['session']) && $_GET['session']) {
+    $student_biodata = loadClass('student_biodata');
+    $student = $student_biodata->getWhere(array('matric_number'=>$_GET['matric']),$c,0,null,false);
+    $student = @$student[0];
+    $data['student'] = $student;
+    $data['result']= $student->getStudentResult($_GET['session']);
+    $academicSession = loadClass('academic_session');
+    $academicSession->ID = $_GET['session'];
+    $academicSession->load();
+    $sessionName = $academicSession->session_name;
+    $data['header'] = $sessionName;
+    $data['queryHtmlTableObjModel'] = $this->queryHtmlTableObjModel;
   }
-  $payload = $allocation->all($count,false,$start,$perPage,'order by date_created desc',$where);
-
-  // Call makeLinks() to make pagination links.
-  $pager_links = $pager->makeLinks($page, $perPage, $total, 'front_full');
-
-  $data['pager_links'] = $pager_links;
-  $data['modelStatus'] = ($payload) ? true : false;
-  $data['modelPayload'] = $payload;
   $data['db'] = $this->db;
-}
-
-private function adminAllocation(&$data){
-  $allocation = loadClass('allocation');
-  $payload = $allocation->all($count,false,0,null,'order by date_created desc');
-
-  $data['modelStatus'] = $payload ? true : false;
-  $data['modelPayload'] = $payload;
-}
-
-private function adminApprove_allocation(&$data){
-
 }
 
 private function getTitlePage(string $modelName){

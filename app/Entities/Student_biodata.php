@@ -269,6 +269,37 @@ protected function getStudentRegistration(){
 	return $resultObjects;
 }
 
+function getFullname($capitalise=false)
+{
+	$surname = $capitalise?strtoupper($this->surname):$this->surname;
+	$result = $surname.' '.$this->firstname.' '.$this->middlename;
+	return $result;
+}
+
+public static function init(){
+	return new Student_biodata;
+}
+
+public function getGenderDistrix(){
+	$query="select gender as label ,count(*) as value from student_biodata group by gender having gender is not null";
+	$result = $this->query($query);
+	return $result;
+}
+
+public function getStudentSessionDistrix(){
+	$query = "SELECT session_name, count(student_biodata_id) as total from student_course_registration join academic_session on academic_session.id=student_course_registration.academic_session_id group by session_name";
+	$result = $this->query($query);
+	return $result;
+}
+
+//return the student result for a particular session,should return null for non registered compulsory course
+public function getStudentResult($session)
+{
+	$query ="select distinct course_score.ID, course_title,course_code, course_unit,course_status,score,grade,point,session_name from student_course_registration join academic_session on academic_session.id=student_course_registration.academic_session_id join session_semester_course ssc on ssc.id= student_course_registration.session_semester_course_id join course on course.id=ssc.course_id left join course_score on student_course_registration.id = course_score.student_course_registration_id  left join grade_scale on score between min_score and max_score where student_course_registration.academic_session_id=? and student_biodata_id=? order by course_code,course_title";
+	$result = $this->query($query,array($session,$this->ID));
+	return $result;
+}
+
 
 
 }

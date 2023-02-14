@@ -30,7 +30,7 @@ function __construct($array=array())
 {
 	parent::__construct($array);
 }
-	 function getStudent_course_registration_idFormField($value=''){
+function getStudent_course_registration_idFormField($value=''){
 	$fk=null;//change the value of this variable to array('table'=>'student_course_registration','display'=>'student_course_registration_name'); if you want to preload the value from the database where the display key is the name of the field to use for display in the table.
 
 	if (is_null($fk)) {
@@ -48,7 +48,6 @@ function __construct($array=array())
 	}
 	$result.="</div>";
 	return  $result;
-
 }
 function getScoreFormField($value=''){
 	return "";
@@ -60,14 +59,14 @@ function getScoreFormField($value=''){
 }
 
 function getCa_scoreFormField($value=''){
-	return "<div class='form-group'>
+	return "<div class='form-group mb-3'>
 	<label for='exam_score' >CA</label>
 		<input type='text' name='ca_score' id='ca_score' value='$value' class='form-control' required />
 </div> ";
 
 }
 function getExam_scoreFormField($value=''){
-	return "<div class='form-group'>
+	return "<div class='form-group mb-3'>
 	<label for='exam_score' >Exam</label>
 		<input type='text' name='exam_score' id='exam_score' value='$value' class='form-control' required />
 </div> ";

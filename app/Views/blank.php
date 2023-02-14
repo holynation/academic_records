@@ -8,4 +8,3 @@
     </div>
     <!-- / Content & end for last graph-->
 <?php include_once ROOTPATH."template/footer.php"; ?>
-

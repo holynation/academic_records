@@ -174,8 +174,11 @@ class QueryHtmlTableObjModel extends Model
 		helper('string');
 	}
 
-	public function buildOrdinaryTable($data,$action=array(),$header=null){
-		return $this->buildHtmlAndAction($data,$action,$header);
+	public function buildOrdinaryTable($data,$action=[],$header=[], $tableAttr=[]){
+		$this->_openTable = $this->openTableTag($tableAttr);
+		$this->_header = $header;
+		$this->_actionArray = $action;
+		return $this->buildHtmlAndAction($data,null);
 	}
 
 	/**
